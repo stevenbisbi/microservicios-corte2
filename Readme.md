@@ -70,7 +70,7 @@ docker-compose up --build
 ```
 http://localhost:3000/products → servicio de productos
 
-http://localhost:5001/CalculateValueTotal → servicio de cálculo
+http://calculation-service/CalculateValueTotal → servicio de cálculo
 
 ---
 
