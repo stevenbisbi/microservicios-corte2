@@ -37,18 +37,80 @@ Ambos servicios se comunican vía **HTTP** y utilizan archivos `.json` para simu
 
 ## 📁 Estructura del Proyecto
 
-```plaintext
+```
 microservicios-corte2/
 │
 ├── nodeService/                  # Servicio de productos (Node.js)
 │   ├── index.js
 │   ├── products.json
 │   └── Dockerfile
+|   └── Package.json
+|   └── products.test.js
 │
 ├── pythonService/                # Servicio de cálculo (Python)
 │   ├── app.py
 │   └── Dockerfile
+│   └── requirements.txt
+│   └── test_app.py
 │
 ├── docker-compose.yml           # Orquestación de ambos servicios
 └── .gitignore
+└── .Readme.md
+```
+
+
+---
+
+## 🚀 ¿Cómo ejecutar el proyecto?
+
+### ✅ Con Docker Compose
+
+```bash
+docker-compose up --build
+```
+http://localhost:3000/products → servicio de productos
+
+http://localhost:5001/CalculateValueTotal → servicio de cálculo
+
+🧪 Pruebas Unitarias
+Node.js (Jest)
+```bash
+
+cd nodeService
+npm install
+npx jest
+```
+Python (Unittest)
+```bash
+
+cd pythonService
+python test_app.py
+```
+🔁 Endpoints del Servicio de Productos
+POST /products
+Crea un nuevo producto:
+
+```json
+Copiar
+Editar
+{
+  "id": "P001",
+  "name": "Mouse Gamer",
+  "unit_price": 150,
+  "quantity": 2
+}
+```
+GET /products
+Consulta todos los productos registrados.
+
+PUT /products/:id
+Actualiza unit_price o quantity, y recalcula automáticamente el valueTotal.
+
+📦 Persistencia Simulada
+Todos los productos se almacenan en el archivo products.json dentro de nodeService/.
+
+```yaml
+
+volumes:
+  - ./nodeService/products.json:/app/products.json
 ```
