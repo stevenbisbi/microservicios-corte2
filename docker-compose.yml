@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  nodeService:
+    build: ./nodeService
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nodeService/product.json:/app/product.json
+    depends_on:
+      - pythonService
+
+  pythonService:
+    build: ./pythonService
+    ports:
+      - "5001:5001"
