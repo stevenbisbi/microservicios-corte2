@@ -72,6 +72,8 @@ http://localhost:3000/products → servicio de productos
 
 http://localhost:5001/CalculateValueTotal → servicio de cálculo
 
+---
+
 🧪 Pruebas Unitarias
 Node.js (Jest)
 ```bash
@@ -86,13 +88,15 @@ Python (Unittest)
 cd pythonService
 python test_app.py
 ```
+
+---
+
 🔁 Endpoints del Servicio de Productos
 POST /products
 Crea un nuevo producto:
 
 ```json
-Copiar
-Editar
+
 {
   "id": "P001",
   "name": "Mouse Gamer",
@@ -105,6 +109,8 @@ Consulta todos los productos registrados.
 
 PUT /products/:id
 Actualiza unit_price o quantity, y recalcula automáticamente el valueTotal.
+
+---
 
 📦 Persistencia Simulada
 Todos los productos se almacenan en el archivo products.json dentro de nodeService/.
