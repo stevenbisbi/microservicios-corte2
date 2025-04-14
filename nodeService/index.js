@@ -35,7 +35,7 @@ app.post("/products", async (req, res) => {
     const response = await axios.post(
       "http://calculation-service:5001/CalculateValueTotal",
       {
-        unitPrice: unit_price,
+        unit_price: unit_price,
         quantity: quantity,
       }
     );
@@ -48,8 +48,13 @@ app.post("/products", async (req, res) => {
 
     res.status(201).send({ message: "Product created", valueTotal });
   } catch (error) {
-    console.error("Error calling calculation service:", error.message);
-    res.status(500).send({ message: "Error calling calculation service" });
+    console.error("Error al llamar al servicio de cálculo:", error.message);
+    res
+      .status(500)
+      .send({
+        message: "Error al llamar al servicio de cálculo",
+        error: error.message,
+      });
   }
 });
 
@@ -77,7 +82,7 @@ app.put("/products/:id", async (req, res) => {
     const response = await axios.post(
       "http://calculation-service:5001/CalculateValueTotal",
       {
-        unitPrice: product.unit_price,
+        unit_price: product.unit_price,
         quantity: product.quantity,
       }
     );

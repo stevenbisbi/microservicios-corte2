@@ -8,11 +8,11 @@ def calculateTotal():
 
     # Extrae los valores enviados desde el microservicio productos
      
-    unitPrice = data['unitPrice']
+    unit_price = data['unit_price']
     quantity = data['quantity']
     
     valueTotal = (
-        unitPrice * quantity
+        unit_price * quantity
     )
     
     # Retorna el valor total en formato JSON
