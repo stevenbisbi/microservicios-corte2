@@ -16,7 +16,7 @@ def calculateTotal():
     )
     
     # Retorna el valor total en formato JSON
-    return jsonify({'valor_total': valueTotal}) 
+    return jsonify({'valueTotal': valueTotal}) 
 
 # Esta condición asegura que la app se ejecute solo si se ejecuta directamente (no al ser importada)
 if __name__ == '__main__':

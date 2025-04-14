@@ -1,16 +1,17 @@
-version: "3"
+# docker-compose.yml
+version: "3.8"
 
 services:
-  nodeService:
+  product-service:
     build: ./nodeService
+    container_name: product-service
     ports:
       - "3000:3000"
-    volumes:
-      - ./nodeService/product.json:/app/product.json
     depends_on:
-      - pythonService
+      - calculation-service
 
-  pythonService:
+  calculation-service:
     build: ./pythonService
+    container_name: calculation-service
     ports:
       - "5001:5001"
