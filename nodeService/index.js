@@ -7,33 +7,33 @@ app.use(express.json());
 
 const DB_FILE = "products.json";
 
-// Leer base de datos simulada
+// Leer la "base de datos" simulada
 function readDB() {
   return JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
 }
 
-// Guardar base de datos simulada
+// Escribir en la "base de datos"
 function writeDB(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
 // Ruta raíz
 app.get("/", (req, res) => {
-  res.send("Product microservice is running!");
+  res.send("¡El microservicio de productos está funcionando!");
 });
 
-// Crear producto
+// Crear un producto
 app.post("/products", async (req, res) => {
   const { id, name, unit_price, quantity } = req.body;
 
   if (!id || !name || unit_price === undefined || quantity === undefined) {
-    return res.status(400).send({ message: "Missing required fields" });
+    return res.status(400).send({ message: "Faltan campos requeridos" });
   }
 
   try {
-    // Llama al microservicio de cálculo
     const response = await axios.post(
-      "http://calculation-service:5001/CalculateValueTotal",
+      process.env.CALC_SERVICE_URL ||
+        "http://calculation-service:5001/CalculateValueTotal",
       {
         unit_price: unit_price,
         quantity: quantity,
@@ -46,41 +46,53 @@ app.post("/products", async (req, res) => {
     db.push({ id, name, unit_price, quantity, valueTotal });
     writeDB(db);
 
-    res.status(201).send({ message: "Product created", valueTotal });
+    res
+      .status(201)
+      .send({ message: "Producto creado correctamente", valueTotal });
   } catch (error) {
-    console.error("Error al llamar al servicio de cálculo:", error.message);
     res
       .status(500)
-      .send({
-        message: "Error al llamar al servicio de cálculo",
-        error: error.message,
-      });
+      .send({ message: "Error al llamar al microservicio de cálculo" });
   }
 });
 
-// Obtener productos
+// Consultar todos los productos
 app.get("/products", (req, res) => {
   res.send(readDB());
 });
 
-// Actualizar producto existente
+// Consultar producto por ID
+app.get("/products/:id", (req, res) => {
+  const db = readDB();
+  const product = db.find((p) => p.id === req.params.id);
+
+  if (!product) {
+    return res.status(404).send({ message: "Producto no encontrado" });
+  }
+
+  res.send(product);
+});
+
+// Actualizar producto
 app.put("/products/:id", async (req, res) => {
   const db = readDB();
   const index = db.findIndex((p) => p.id === req.params.id);
 
   if (index === -1) {
-    return res.status(404).send({ message: "Product not found" });
+    return res.status(404).send({ message: "Producto no encontrado" });
   }
 
   const product = db[index];
-  const { unit_price, quantity } = req.body;
+  const { name, unit_price, quantity } = req.body;
 
+  if (name !== undefined) product.name = name;
   if (unit_price !== undefined) product.unit_price = unit_price;
   if (quantity !== undefined) product.quantity = quantity;
 
   try {
     const response = await axios.post(
-      "http://calculation-service:5001/CalculateValueTotal",
+      process.env.CALC_SERVICE_URL ||
+        "http://calculation-service:5001/CalculateValueTotal",
       {
         unit_price: product.unit_price,
         quantity: product.quantity,
@@ -93,12 +105,17 @@ app.put("/products/:id", async (req, res) => {
 
     res.send(product);
   } catch (error) {
-    console.error("Error recalculating total value:", error.message);
-    res.status(500).send({ message: "Error recalculating total value" });
+    res.status(500).send({ message: "Error al recalcular el valor total" });
   }
 });
 
-// Iniciar servidor
-app.listen(3000, () => {
-  console.log("product-service is running on http://localhost:3000");
-});
+// Iniciar servidor solo si es el archivo principal
+if (require.main === module) {
+  app.listen(3000, () => {
+    console.log(
+      "🔧 El microservicio de productos está corriendo en http://localhost:3000"
+    );
+  });
+}
+
+module.exports = app; // Exportación para pruebas con supertest
