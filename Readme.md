@@ -92,6 +92,7 @@ python test_app.py
 ---
 
 🔁 Endpoints del Servicio de Productos
+
 POST /products
 Crea un nuevo producto:
 
@@ -107,8 +108,21 @@ Crea un nuevo producto:
 GET /products
 Consulta todos los productos registrados.
 
+GET /productos/:id
+Consulta los productos por id
+
 PUT /products/:id
-Actualiza unit_price o quantity, y recalcula automáticamente el valueTotal.
+Actualiza name, unit_price o quantity, y recalcula automáticamente el valueTotal.
+
+
+```json
+
+{
+  "name": "Silla Gamer",
+  "unit_price": 300,
+  "quantity": 3
+}
+```
 
 ---
 
